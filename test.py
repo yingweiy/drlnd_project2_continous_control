@@ -29,6 +29,7 @@ states = env_info.vector_observations                  # get the current state (
 scores = np.zeros(num_agents)                          # initialize the score (for each agent)
 while True:
     actions = np.random.randn(num_agents, action_size) # select an action (for each agent)
+    print('Actions:', actions)
     actions = np.clip(actions, -1, 1)                  # all actions between -1 and 1
     env_info = env.step(actions)[brain_name]           # send all actions to tne environment
     next_states = env_info.vector_observations         # get next state (for each agent)
