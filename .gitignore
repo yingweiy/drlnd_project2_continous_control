@@ -108,5 +108,6 @@ venv.bak/
 .ipynb_checkpoints/
 *.log
 *.zip
+*.pth
 Reacher_Linux/
 
