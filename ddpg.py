@@ -10,7 +10,7 @@ class DDPG:
         self.agent = agent
         self.score_window = 100
 
-    def train(self, n_episodes=1000, max_t=300, verbose=True):
+    def train(self, n_episodes=3000, max_t=1000, verbose=True):
         scores_deque = deque(maxlen=self.score_window)
         scores = []
         for i_episode in range(1, n_episodes + 1):

@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-fc = [256, 256, 256]
+fc = [256, 256, 256, 256]
 
 
 def hidden_init(layer):
@@ -29,21 +29,24 @@ class Actor(nn.Module):
         self.fc1 = nn.Linear(state_size, fc[0])
         self.fc2 = nn.Linear(fc[0], fc[1])
         self.fc3 = nn.Linear(fc[1], fc[2])
-        self.fc4 = nn.Linear(fc[2], action_size)
+        self.fc4 = nn.Linear(fc[2], fc[3])
+        self.fc5 = nn.Linear(fc[-1], action_size)
         self.reset_parameters()
 
     def reset_parameters(self):
         self.fc1.weight.data.uniform_(*hidden_init(self.fc1))
         self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
         self.fc3.weight.data.uniform_(*hidden_init(self.fc3))
-        self.fc4.weight.data.uniform_(-3e-3, 3e-3)
+        self.fc4.weight.data.uniform_(*hidden_init(self.fc4))
+        self.fc5.weight.data.uniform_(-3e-3, 3e-3)
 
     def forward(self, state):
         """Build an actor (policy) network that maps states -> actions."""
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = F.relu(self.fc4(x))
+        x = self.fc5(x)
         return torch.clamp(x,-1,1)
 
 class Critic(nn.Module):
@@ -63,14 +66,16 @@ class Critic(nn.Module):
         self.fcs1 = nn.Linear(state_size, fc[0])
         self.fc2 = nn.Linear(fc[0]+action_size, fc[1])
         self.fc3 = nn.Linear(fc[1], fc[2])
-        self.fc4 = nn.Linear(fc[2], 1)
+        self.fc4 = nn.Linear(fc[2], fc[3])
+        self.fc5 = nn.Linear(fc[3], 1)
         self.reset_parameters()
 
     def reset_parameters(self):
         self.fcs1.weight.data.uniform_(*hidden_init(self.fcs1))
         self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
         self.fc3.weight.data.uniform_(*hidden_init(self.fc3))
-        self.fc4.weight.data.uniform_(-3e-3, 3e-3)
+        self.fc4.weight.data.uniform_(*hidden_init(self.fc4))
+        self.fc5.weight.data.uniform_(-3e-3, 3e-3)
 
     def forward(self, state, action):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
@@ -78,4 +83,5 @@ class Critic(nn.Module):
         x = torch.cat((xs, action), dim=1)
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
-        return self.fc4(x)
+        x = F.relu(self.fc4(x))
+        return self.fc5(x)

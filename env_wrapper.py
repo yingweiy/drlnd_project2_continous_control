@@ -10,7 +10,6 @@ class EnvironmentWrapper:
         # get the default brain
         self.brain_name = self.env.brain_names[0]
         self.brain = self.env.brains[self.brain_name]
-        self.scaler = joblib.load('state_scaler.pkl')
         state = self.reset()
         self.state_size = state.shape[0]
         print('Number of agents:', self.num_agents)
