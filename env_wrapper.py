@@ -1,5 +1,7 @@
 from unityagents import UnityEnvironment
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.externals import joblib
 
 class EnvironmentWrapper:
     def __init__(self, fn='Reacher_Linux_SingleAgent/Reacher.x86_64'):
@@ -8,11 +10,16 @@ class EnvironmentWrapper:
         # get the default brain
         self.brain_name = self.env.brain_names[0]
         self.brain = self.env.brains[self.brain_name]
-        states = self.reset()
-        self.state_size = states.shape[1]
+        self.scaler = joblib.load('state_scaler.pkl')
+        state = self.reset()
+        self.state_size = state.shape[0]
         print('Number of agents:', self.num_agents)
         print('Size of each action:', self.action_size)
-        print('There are {} agents. Each observes a state with length: {}'.format(states.shape[0], self.state_size))
+        print('Each observes a state with length: {}'.format(self.state_size))
+
+    #def normalize(self, state):
+    #    #return self.scaler.transform([state])[0]
+    #    return state
 
     def reset(self):
         # reset the environment
@@ -22,8 +29,8 @@ class EnvironmentWrapper:
         # size of each action
         self.action_size = self.brain.vector_action_space_size
         # examine the state space
-        states = self.env_info.vector_observations
-        return states
+        state = self.env_info.vector_observations[0]
+        return state
 
     def step(self, action):
         env_info = self.env.step(action)[self.brain_name]  # send all actions to tne environment

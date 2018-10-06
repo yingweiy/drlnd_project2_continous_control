@@ -19,6 +19,7 @@ class DDPG:
             score = 0
             for t in range(max_t):
                 action = agent.act(state)
+                #print(state)
                 next_state, reward, done, _ = env.step(action)
                 agent.step(state, action, reward, next_state, done)
                 state = next_state
