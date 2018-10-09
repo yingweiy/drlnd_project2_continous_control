@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-fc = [64, 64, 64, 64]
+fc = [512, 256, 128, 64]
 
 def hidden_init(layer):
     fan_in = layer.weight.data.size()[0]
