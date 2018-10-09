@@ -10,7 +10,7 @@ class DDPG:
         self.agent = agent
         self.score_window = 100
 
-    def train(self, n_episodes=300, max_t=2000, verbose=True):
+    def train(self, n_episodes=500, max_t=2000, target_score=30.0):
         scores_deque = deque(maxlen=self.score_window)
         scores = []
         for i_episode in range(1, n_episodes + 1):
@@ -27,13 +27,17 @@ class DDPG:
                     break
             scores_deque.append(score)
             scores.append(score)
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)), end="")
-            torch.save(agent.actor_local.state_dict(), 'checkpoint_actor.pth')
-            torch.save(agent.critic_local.state_dict(), 'checkpoint_critic.pth')
-            if verbose:
-                if i_episode % self.score_window == 0:
-                    print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
-
+            avg_score = np.mean(scores_deque)
+            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, avg_score), end="")
+            if avg_score>target_score:
+                print('Reached target score {} in {} episodes.'.format(target_score, i_episode))
+                break
+            if i_episode % self.score_window == 0:
+                print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
+                torch.save(agent.actor_local.state_dict(), 'checkpoint_actor.pth')
+                torch.save(agent.critic_local.state_dict(), 'checkpoint_critic.pth')
+        torch.save(agent.actor_local.state_dict(), 'final_actor.pth')
+        torch.save(agent.critic_local.state_dict(), 'final_critic.pth')
         return scores
 
 
