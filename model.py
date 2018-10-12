@@ -31,11 +31,6 @@ class Actor(nn.Module):
         self.fc3 = nn.Linear(fc[1], fc[2])
         self.fc4 = nn.Linear(fc[2], fc[3])
         self.fc5 = nn.Linear(fc[-1], action_size)
-        self.bn0 = nn.BatchNorm1d(state_size)
-        self.bn1 = nn.BatchNorm1d(fc[0])
-        self.bn2 = nn.BatchNorm1d(fc[1])
-        self.bn3 = nn.BatchNorm1d(fc[2])
-        self.bn4 = nn.BatchNorm1d(fc[3])
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -47,12 +42,6 @@ class Actor(nn.Module):
 
     def forward(self, state):
         """Build an actor (policy) network that maps states -> actions."""
-        #x = self.bn0(state)
-        #x = F.relu(self.bn1(self.fc1(x)))
-        #x = F.relu(self.bn2(self.fc2(x)))
-        #x = F.relu(self.bn3(self.fc3(x)))
-        #x = F.relu(self.bn4(self.fc4(x)))
-        #x = self.bn0(state)
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
@@ -81,12 +70,6 @@ class Critic(nn.Module):
         self.fc5 = nn.Linear(fc[3], 1)
         self.reset_parameters()
 
-        self.bn0 = nn.BatchNorm1d(state_size)
-        self.bn1 = nn.BatchNorm1d(fc[0])
-        self.bn2 = nn.BatchNorm1d(fc[1])
-        self.bn3 = nn.BatchNorm1d(fc[2])
-        self.bn4 = nn.BatchNorm1d(fc[3])
-
 
     def reset_parameters(self):
         self.fcs1.weight.data.uniform_(*hidden_init(self.fcs1))
@@ -97,12 +80,6 @@ class Critic(nn.Module):
 
     def forward(self, state, action):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
-        #xs = self.bn0(state)
-        #xs = F.relu(self.bn1(self.fcs1(xs)))
-        #x = torch.cat((xs, action), dim=1)
-        #x = F.relu(self.bn2(self.fc2(x)))
-        #x = F.relu(self.bn3(self.fc3(x)))
-        #x = F.relu(self.bn4(self.fc4(x)))
         xs = F.relu(self.fcs1(state))
         x = torch.cat((xs, action), dim=1)
         x = F.relu(self.fc2(x))
