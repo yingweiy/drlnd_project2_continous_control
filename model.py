@@ -57,9 +57,8 @@ class Actor(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = F.relu(self.fc4(x))
-
-        x = self.fc5(x)
-        return torch.clamp(x,-1,1)
+        x = F.tanh(self.fc5(x))
+        return x
 
 class Critic(nn.Module):
     """Critic (Value) Model."""
