@@ -31,13 +31,12 @@ class DDPG:
             avg_score = np.mean(scores_deque)
             scores_global.append(scores)
 
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, avg_score), end="")
+            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, avg_score))
             if avg_score>target_score:
                 print('Reached target score {} in {} episodes.'.format(target_score, i_episode))
                 self.save()
                 break
             if i_episode % self.score_window == 0:
-                print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
                 self.save()
 
         return scores_global
