@@ -14,13 +14,13 @@ class DDPG:
         scores_deque = deque(maxlen=self.score_window)
         scores_global = []
         for i_episode in range(1, n_episodes + 1):
-            states = env.reset()
+            states = self.env.reset()
             scores = np.zeros(self.env.num_agents)
             self.agent.reset()
 
             for t in range(max_t):
                 actions = self.agent.act(states)
-                next_states, rewards, dones, _ = env.step(actions)
+                next_states, rewards, dones, _ = self.env.step(actions)
                 self.agent.step(states, actions, rewards, next_states, dones)
                 states = next_states
                 scores += rewards
