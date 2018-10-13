@@ -13,6 +13,8 @@ class EnvironmentWrapper:
         print('Size of each action:', self.action_size)
         print('Each observes a state with length: {}'.format(self.state_size))
 
+    def render(self):
+        self.env.render()
 
     def reset(self):
         # reset the environment
